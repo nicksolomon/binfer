@@ -2,7 +2,7 @@ Package: binfer
 Type: Package
 Title: Bayesian Inference for a Single Parameter
 Version: 0.1.0
-Authors@R: person(first = "Nick", last = "Solomon", role = c("aut", "cre"))
+Authors@R: person("Nick", "Solomon", email = "nicksolomon10@gmail.com", role = c("aut", "cre"))
 Description: Functions for doing Bayesian inference
 License: MIT
 Encoding: UTF-8
