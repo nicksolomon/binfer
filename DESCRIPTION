@@ -1,11 +1,9 @@
 Package: binfer
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Bayesian Inference for a Single Parameter
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Authors@R: person(first = "Nick", last = "Solomon", role = c("aut", "cre"))
+Description: Functions for doing Bayesian inference
+License: MIT
 Encoding: UTF-8
 LazyData: true
