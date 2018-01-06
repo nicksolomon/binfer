@@ -10,4 +10,5 @@ LazyData: true
 imports:
     rlang,
     dplyr,
-    mcmc
+    mcmc,
+    ggplot2
