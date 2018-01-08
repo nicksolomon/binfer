@@ -7,7 +7,10 @@
 diagnose(x)
 }
 \arguments{
-\item{x}{}
+\item{x}{The output of \code{siulate_posterior()}}
+}
+\value{
+\code{x} and prints some diagnostic plots.
 }
 \description{
 Title

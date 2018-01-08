@@ -1,12 +1,11 @@
 
 #' Title
 #'
-#' @param x
+#' @param x The output of \code{siulate_posterior()}
 #'
-#' @return
+#' @return \code{x} and prints some diagnostic plots.
 #' @export
 #'
-#' @examples
 #' @import patchwork
 #' @import ggplot2
 #' @import dplyr

@@ -7,7 +7,13 @@
 assume(x, prior)
 }
 \arguments{
-\item{prior}{}
+\item{x}{The output of \code{deine()}.}
+
+\item{prior}{A formula with the left hand side equal to the name of a
+function.}
+}
+\value{
+The dataframe \code{x} with the prior as an attribute.
 }
 \description{
 Title

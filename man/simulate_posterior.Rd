@@ -7,7 +7,12 @@
 simulate_posterior(x, ...)
 }
 \arguments{
-\item{...}{}
+\item{x}{The output of \code{assume()}}
+
+\item{...}{Parameters to be passed to \code{mcmc::metrop()}.}
+}
+\value{
+A dataframe of draws from the posterior distribution.
 }
 \description{
 Title

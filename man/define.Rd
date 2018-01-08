@@ -2,13 +2,19 @@
 % Please edit documentation in R/define.R
 \name{define}
 \alias{define}
-\title{Title}
+\title{Define a likelihood}
 \usage{
 define(x, likelihood)
 }
 \arguments{
-\item{likelihood}{}
+\item{x}{A \code{date.frame}.}
+
+\item{likelihood}{A formula where the right hand side is a variable in
+\code{x} and the left hand side is a the name of a function.}
+}
+\value{
+A \code{data.frame} with the likelihood as an attribute.
 }
 \description{
-Title
+Define a likelihood
 }

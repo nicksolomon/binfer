@@ -1,12 +1,13 @@
 #' Title
 #'
-#' @param x
-#' @param prior
+#' @param x The output of \code{deine()}.
+#' @param prior A formula with the left hand side equal to the name of a
+#'        function.
 #'
-#' @return
+#' @return The dataframe \code{x} with the prior as an attribute.
 #' @export
 #'
-#' @examples
+
 assume <- function(x, prior) {
   attr(x, "prior") <- as.character(rlang::f_rhs(prior))
   return(x)

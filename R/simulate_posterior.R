@@ -1,12 +1,12 @@
 #' Title
 #'
-#' @param x
-#' @param ...
+#' @param x The output of \code{assume()}
+#' @param ... Parameters to be passed to \code{mcmc::metrop()}.
 #'
-#' @return
+#' @return A dataframe of draws from the posterior distribution.
 #' @export
 #'
-#' @examples
+
 simulate_posterior <- function(x, ...) {
   single_lik <- match.fun(attr(x, "likelihood"))
   prior <- match.fun(attr(x, "prior"))
