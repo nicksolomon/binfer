@@ -7,6 +7,16 @@
 #' @return A \code{data.frame} with the likelihood as an attribute.
 #' @export
 #'
+#' @examples
+#'   my_lik <- function(data, theta) {dnorm(data, mean = 3.07333 , sd = theta)}
+#'   my_prior <- function(theta) {dgamma(theta, shape = 1)}
+#'
+#'   posterior <- define(iris, Sepal.Width ~ my_lik) %>%
+#'     assume(prior = ~ my_prior) %>%
+#'     simulate_posterior(initial = .43, nbatch = 1e5, blen = 1, scale = .01) %>%
+#'     diagnose() %>%
+#'     clean(burnin = 0, subsample = 40) %>%
+#'     diagnose()
 
 define <- function(x, likelihood) {
   attr(x, "response") <- as.character(rlang::f_lhs(likelihood))
