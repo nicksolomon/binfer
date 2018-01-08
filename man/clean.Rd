@@ -14,6 +14,9 @@ chain.}
 
 \item{subsample}{The number of observations to skip to reduce serial correlation.}
 }
+\value{
+A cleaned up chain of draws from the posterior distribution.
+}
 \description{
 Title
 }

@@ -5,10 +5,9 @@
 #'        chain.
 #' @param subsample The number of observations to skip to reduce serial correlation.
 #'
-#' @return
+#' @return A cleaned up chain of draws from the posterior distribution.
 #' @export
 #'
-#' @examples
 clean <- function(x, burnin = 0, subsample = 1){
   out <- x %>%
     mutate(index = 1:nrow(x))
