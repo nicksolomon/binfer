@@ -11,4 +11,6 @@ imports:
     rlang,
     dplyr,
     mcmc,
-    ggplot2
+    ggplot2,
+    patchwork
+RoxygenNote: 6.0.1

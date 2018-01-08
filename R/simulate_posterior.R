@@ -1,3 +1,12 @@
+#' Title
+#'
+#' @param x
+#' @param ...
+#'
+#' @return
+#' @export
+#'
+#' @examples
 simulate_posterior <- function(x, ...) {
   single_lik <- match.fun(attr(x, "likelihood"))
   prior <- match.fun(attr(x, "prior"))
