@@ -13,7 +13,7 @@
 diagnose <- function(x) {
   with_diagnostics <- x %>%
     mutate(index = 1:nrow(x),
-           accepted = chain == dplyr::lag(chain))
+           accepted = chain != dplyr::lag(chain))
   message(paste0("Acceptance rate: ", mean(with_diagnostics$accepted, na.rm = TRUE)))
 
   trace_plot <- ggplot(with_diagnostics, aes(x = index, y = chain)) +

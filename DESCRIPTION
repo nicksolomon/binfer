@@ -12,5 +12,6 @@ imports:
     dplyr,
     mcmc,
     ggplot2,
-    patchwork
+    patchwork,
+    magrittr
 RoxygenNote: 6.0.1
