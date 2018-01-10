@@ -24,7 +24,7 @@ This package aims to make doing Bayesian things a little easier by giving a clea
   
 ## Examples
 
-Estimate the standard deviation of a normal distribution with a normal prior:
+Estimate the standard deviation of a normal distribution with a uniform prior:
 ```{r}
 library(binfer)
 library(tidyverse)
