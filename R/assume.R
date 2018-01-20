@@ -9,6 +9,12 @@
 #'
 
 assume <- function(x, prior) {
+
   attr(x, "prior") <- as.character(rlang::f_rhs(prior))
+
+  if (! "binfer" %in% class(x)){
+    stop("The input isn't a `binfer` object. Is it the output of `assume()`?")
+  }
+
   return(x)
 }

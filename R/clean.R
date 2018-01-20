@@ -9,6 +9,10 @@
 #' @export
 #'
 clean <- function(x, burnin = 0, subsample = 1){
+  if (! "binfer.posterior" %in% class(x)){
+    stop("The input is not a `binfer` posterior. Have you called `simulate_posterior()`?")
+  }
+
   out <- x %>%
     mutate(index = 1:nrow(x))
 
@@ -16,6 +20,10 @@ clean <- function(x, burnin = 0, subsample = 1){
     filter(index > burnin) %>%
     filter(index %% subsample == 0)
 
-  out %>%
+  out <- out %>%
     select(-index)
+
+  class(out) <- class(x)
+
+  out
 }

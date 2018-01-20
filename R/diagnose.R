@@ -11,6 +11,11 @@
 #' @import dplyr
 
 diagnose <- function(x) {
+
+  if (! "binfer.posterior" %in% class(x)){
+    stop("The input is not a `binfer` posterior. Have you called `simulate_posterior()`?")
+  }
+
   with_diagnostics <- x %>%
     mutate(index = 1:nrow(x),
            accepted = chain != dplyr::lag(chain))

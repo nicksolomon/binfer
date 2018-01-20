@@ -8,6 +8,15 @@
 #'
 
 simulate_posterior <- function(x, ...) {
+
+  attr_names <- names(attributes(x))
+
+  if (!("likelihood" %in% attr_names &&
+        "response" %in% attr_names &&
+        "prior" %in% attr_names)){
+    stop("Missing likelihood, response, or prior. Did you follow all the steps?")
+  }
+
   single_lik <- match.fun(attr(x, "likelihood"))
   prior <- match.fun(attr(x, "prior"))
   response <- attr(x, "response")
@@ -16,5 +25,8 @@ simulate_posterior <- function(x, ...) {
 
   chain <- mcmc::metrop(dens, ...)
 
-  data.frame(chain = chain$batch)
+  out <- data.frame(chain = chain$batch)
+  class(out) <- c("binfer.posterior", class(x))
+
+  out
 }

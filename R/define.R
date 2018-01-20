@@ -19,9 +19,15 @@
 #'     diagnose()
 
 define <- function(x, likelihood) {
+
   attr(x, "response") <- as.character(rlang::f_lhs(likelihood))
   attr(x, "likelihood") <- as.character(rlang::f_rhs(likelihood))
 
+  if (! attr(x, "response") %in% names(x)){
+    stop("Column", attr(x, "response"), "not found in x.")
+  }
+
   x <- dplyr::select(x, attr(x, "response"))
+  class(x) <- c("binfer", class(x))
   return(x)
 }
