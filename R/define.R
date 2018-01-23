@@ -24,8 +24,21 @@ define <- function(x, likelihood) {
   attr(x, "likelihood") <- as.character(rlang::f_rhs(likelihood))
 
   if (! attr(x, "response") %in% names(x)){
-    stop("Column", attr(x, "response"), "not found in x.")
+    stop("Column ", attr(x, "response"), " not found in x.")
   }
+
+  if (! is.numeric(x[[attr(x, "response")]])){
+    stop("Column ", attr(x, "response"), " should be numeric.")
+  }
+
+  tryCatch(
+    match.fun(attr(x, "likelihood")),
+    error = function(e){
+      e$message <- paste0("Couldn't find function ", attr(x, "likelihood"), ".")
+      stop(e)
+    }
+  )
+
 
   x <- dplyr::select(x, attr(x, "response"))
   class(x) <- c("binfer", class(x))
