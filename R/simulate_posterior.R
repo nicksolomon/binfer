@@ -21,7 +21,7 @@ simulate_posterior <- function(x, ...) {
   prior <- match.fun(attr(x, "prior"))
   response <- attr(x, "response")
 
-  dens <- function(theta) {log(prod(single_lik(x[[response]], theta) * prior(theta)))}
+  dens <- function(theta) {sum(log(single_lik(x[[response]], theta)) + log(prior(theta)))}
 
   chain <- mcmc::metrop(dens, ...)
 
