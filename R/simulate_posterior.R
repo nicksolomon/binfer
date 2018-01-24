@@ -21,9 +21,9 @@ simulate_posterior <- function(x, ...) {
   prior <- match.fun(attr(x, "prior"))
   response <- attr(x, "response")
 
-  dens <- function(theta) {sum(log(single_lik(x[[response]], theta)) + log(prior(theta)))}
+  log_dens <- function(theta) {sum(log(single_lik(x[[response]], theta))) + log(prior(theta))}
 
-  chain <- mcmc::metrop(dens, ...)
+  chain <- mcmc::metrop(log_dens, ...)
 
   out <- data.frame(chain = chain$batch)
   class(out) <- c("binfer.posterior", class(x))
