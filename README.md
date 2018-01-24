@@ -38,7 +38,7 @@ The steps
 Examples
 --------
 
-Estimate the standard deviation of a normal distribution with a gamma prior:
+Let's check our simulations by comparing the results to an analytically tractable problem. We'll use count data that we assume follows a poisson distribution. The prior we choose is the conjugate prior, a gamma distribution. The posterior should be a gamma distribution as well. Let's see if that's what we get!
 
 ``` r
 library(binfer)
@@ -53,6 +53,53 @@ library(tidyverse)
 #> filter(): dplyr, stats
 #> lag():    dplyr, stats
 
+# Load taxis dataset
+data("taxis")
+
+# Define the prior and the likelihood
+my_lik <- function(data, theta) {if (theta > 0) dpois(data, lambda = theta) else 0}
+my_prior <- function(theta) {dgamma(theta, rate = 10, shape = 10)} 
+
+# Sample the data to reduce runtimes
+taxis_small <- taxis %>%
+  sample_frac(.1)
+
+# Do the binfer steps
+posterior <- taxis_small %>% 
+  define(passenger_count ~ my_lik) %>% 
+  assume(~ my_prior) %>% 
+  simulate_posterior(initial = mean(taxis$passenger_count), nbatch = 1e5, blen = 1, scale = .1) %>% 
+  diagnose() %>% 
+  clean(burnin = 1000, subsample = 15) %>% 
+  diagnose()
+#> Acceptance rate: 0.274762747627476
+#> Acceptance rate: 0.989543870283376
+```
+
+![](man/figures/README-unnamed-chunk-1-1.png)![](man/figures/README-unnamed-chunk-1-2.png)
+
+``` r
+
+# Calculate the analytical hyperparameters
+hyper1 <- 10 + sum(taxis_small$passenger_count)
+hyper2 <- 10 + length(taxis_small$passenger_count)
+hyper1/hyper2
+#> [1] 1.728912
+
+# Plot the simulated density against the analytical density
+ggplot(posterior, aes(chain)) + 
+  geom_density() +
+  stat_function(fun = dgamma, args = list(hyper1, hyper2), color = "red")
+```
+
+![](man/figures/README-unnamed-chunk-1-3.png)
+
+Estimate the standard deviation of a normal distribution with a gamma prior:
+
+``` r
+library(binfer)
+library(tidyverse)
+
 my_lik <- function(data, theta) {if (theta > 0) dnorm(data, mean = mean(iris$Sepal.Width) , sd = theta) else 0}
 my_prior <- function(theta) {dgamma(theta, shape = 10, rate = 20)}
 
@@ -62,8 +109,8 @@ posterior <- define(iris, Sepal.Width ~ my_lik) %>%
   diagnose() %>% 
   clean(burnin = 0, subsample = 20) %>% 
   diagnose()
-#> Acceptance rate: 0.265922659226592
-#> Acceptance rate: 0.996599319863973
+#> Acceptance rate: 0.499254992549926
+#> Acceptance rate: 1
 ```
 
 ![](man/figures/README-example1-1.png)![](man/figures/README-example1-2.png)
@@ -75,7 +122,7 @@ posterior %>% summarise(mean = mean(chain),
                         lower = quantile(chain, .025),
                         upper = quantile(chain, .975))
 #>        mean         sd     lower     upper
-#> 1 0.4474933 0.01105071 0.4264569 0.4692651
+#> 1 0.4383048 0.02515639 0.3921018 0.4920014
 ```
 
 Estimate the probability of success of a binomnial distribution with a beta prior:
@@ -94,8 +141,8 @@ posterior2 <- binom_test_data %>%
   diagnose() %>% 
   clean(burnin = 1000, subsample = 30) %>% 
   diagnose()
-#> Acceptance rate: 0.179681796817968
-#> Acceptance rate: 0.993331312518945
+#> Acceptance rate: 0.321533215332153
+#> Acceptance rate: 1
 ```
 
 ![](man/figures/README-example2-1.png)![](man/figures/README-example2-2.png)
@@ -106,6 +153,8 @@ posterior2 %>%
             sd = sd(chain), 
             lower = quantile(chain, .025), 
             upper = quantile(chain, .975))
-#>         mean         sd      lower     upper
-#> 1 0.05910013 0.02348949 0.02157673 0.1113281
+#> # A tibble: 1 x 4
+#>        mean         sd      lower     upper
+#>       <dbl>      <dbl>      <dbl>     <dbl>
+#> 1 0.1141411 0.04352383 0.04338548 0.2074253
 ```
