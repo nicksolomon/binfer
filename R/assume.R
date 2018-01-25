@@ -14,7 +14,7 @@ assume <- function(x, prior) {
 
   attr(x, "prior") <- as.character(rlang::f_rhs(prior))
 
-  if (! "likelihood" %in% names(attrs(x))){
+  if (! "likelihood" %in% names(attributes(x))){
     stop("The input doesn't have a likelihood. Is it the output of `define()`?")
   }
   class(x) <- c("binfer", class(x))
