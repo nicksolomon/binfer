@@ -9,7 +9,7 @@
 data("taxis")
 }
 \description{
-This data frame contains a random sample of yellow taxi rides given over the
+This data frame contains information about yellow taxi rides given over the
 course of approximately an hour in New York City.
 }
 \keyword{datasets}
