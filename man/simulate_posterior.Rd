@@ -2,7 +2,7 @@
 % Please edit documentation in R/simulate_posterior.R
 \name{simulate_posterior}
 \alias{simulate_posterior}
-\title{Title}
+\title{Simulate posterior}
 \usage{
 simulate_posterior(x, ...)
 }
@@ -15,5 +15,5 @@ simulate_posterior(x, ...)
 A dataframe of draws from the posterior distribution.
 }
 \description{
-Title
+Simulate the posterior distribution
 }

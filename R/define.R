@@ -1,6 +1,8 @@
+#' Define
+#'
 #' Define a likelihood
 #'
-#' @param x A \code{date.frame}.
+#' @param x A \code{data.frame}.
 #' @param likelihood A formula where the right hand side is a variable in
 #'        \code{x} and the left hand side is a the name of a function.
 #'
@@ -41,6 +43,6 @@ define <- function(x, likelihood) {
 
 
   x <- dplyr::select(x, attr(x, "response"))
-  class(x) <- c("binfer", class(x))
+
   return(x)
 }

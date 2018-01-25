@@ -1,6 +1,8 @@
-#' Title
+#' Assume
 #'
-#' @param x The output of \code{deine()}.
+#' Assume a posterior distribution.
+#'
+#' @param x The output of \code{\link{define}()}.
 #' @param prior A formula with the left hand side equal to the name of a
 #'        function.
 #'
@@ -12,9 +14,9 @@ assume <- function(x, prior) {
 
   attr(x, "prior") <- as.character(rlang::f_rhs(prior))
 
-  if (! "binfer" %in% class(x)){
-    stop("The input isn't a `binfer` object. Is it the output of `assume()`?")
+  if (! "likelihood" %in% names(attrs(x))){
+    stop("The input doesn't have a likelihood. Is it the output of `define()`?")
   }
-
+  class(x) <- c("binfer", class(x))
   return(x)
 }

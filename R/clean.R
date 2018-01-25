@@ -1,4 +1,6 @@
-#' Title
+#' Clean
+#'
+#' Remove a burn in period and subsample for independence
 #'
 #' @param x The output of \code{simulate_posterior()}
 #' @param burnin The number of observations to disgard at the beginning of the

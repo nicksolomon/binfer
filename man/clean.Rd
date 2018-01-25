@@ -2,7 +2,7 @@
 % Please edit documentation in R/clean.R
 \name{clean}
 \alias{clean}
-\title{Title}
+\title{Clean}
 \usage{
 clean(x, burnin = 0, subsample = 1)
 }
@@ -18,5 +18,5 @@ chain.}
 A cleaned up chain of draws from the posterior distribution.
 }
 \description{
-Title
+Remove a burn in period and subsample for independence
 }
