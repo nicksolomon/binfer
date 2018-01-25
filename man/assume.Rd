@@ -2,12 +2,12 @@
 % Please edit documentation in R/assume.R
 \name{assume}
 \alias{assume}
-\title{Title}
+\title{Assume}
 \usage{
 assume(x, prior)
 }
 \arguments{
-\item{x}{The output of \code{deine()}.}
+\item{x}{The output of \code{\link{define}()}.}
 
 \item{prior}{A formula with the left hand side equal to the name of a
 function.}
@@ -16,5 +16,5 @@ function.}
 The dataframe \code{x} with the prior as an attribute.
 }
 \description{
-Title
+Assume a posterior distribution.
 }

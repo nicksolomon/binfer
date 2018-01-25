@@ -2,7 +2,7 @@
 % Please edit documentation in R/diagnose.R
 \name{diagnose}
 \alias{diagnose}
-\title{Title}
+\title{Diagnose}
 \usage{
 diagnose(x)
 }
@@ -13,5 +13,5 @@ diagnose(x)
 \code{x} and prints some diagnostic plots.
 }
 \description{
-Title
+Diagnose the chain
 }

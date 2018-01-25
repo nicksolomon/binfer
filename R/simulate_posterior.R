@@ -1,4 +1,6 @@
-#' Title
+#' Simulate posterior
+#'
+#' Simulate the posterior distribution
 #'
 #' @param x The output of \code{assume()}
 #' @param ... Parameters to be passed to \code{mcmc::metrop()}.

@@ -1,5 +1,7 @@
 
-#' Title
+#' Diagnose
+#'
+#' Diagnose the chain
 #'
 #' @param x The output of \code{siulate_posterior()}
 #'

@@ -2,12 +2,12 @@
 % Please edit documentation in R/define.R
 \name{define}
 \alias{define}
-\title{Define a likelihood}
+\title{Define}
 \usage{
 define(x, likelihood)
 }
 \arguments{
-\item{x}{A \code{date.frame}.}
+\item{x}{A \code{data.frame}.}
 
 \item{likelihood}{A formula where the right hand side is a variable in
 \code{x} and the left hand side is a the name of a function.}
