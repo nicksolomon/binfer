@@ -72,8 +72,8 @@ posterior <- taxis_small %>%
   diagnose() %>% 
   clean(burnin = 1000, subsample = 15) %>% 
   diagnose()
-#> Acceptance rate: 0.274762747627476
-#> Acceptance rate: 0.989543870283376
+#> Acceptance rate: 0.276782767827678
+#> Acceptance rate: 0.989089255947871
 ```
 
 ![](man/figures/README-unnamed-chunk-1-1.png)![](man/figures/README-unnamed-chunk-1-2.png)
@@ -83,8 +83,16 @@ posterior <- taxis_small %>%
 # Calculate the analytical hyperparameters
 hyper1 <- 10 + sum(taxis_small$passenger_count)
 hyper2 <- 10 + length(taxis_small$passenger_count)
+
+# Analytic mean estimator
 hyper1/hyper2
-#> [1] 1.728912
+#> [1] 1.749389
+
+# Our mean estimator
+posterior %>% 
+  summarize(mean = mean(chain))
+#>       mean
+#> 1 1.749365
 
 # Plot the simulated density against the analytical density
 ggplot(posterior, aes(chain)) + 
@@ -109,7 +117,7 @@ posterior <- define(iris, Sepal.Width ~ my_lik) %>%
   diagnose() %>% 
   clean(burnin = 0, subsample = 20) %>% 
   diagnose()
-#> Acceptance rate: 0.499254992549926
+#> Acceptance rate: 0.497744977449774
 #> Acceptance rate: 1
 ```
 
@@ -122,7 +130,7 @@ posterior %>% summarise(mean = mean(chain),
                         lower = quantile(chain, .025),
                         upper = quantile(chain, .975))
 #>        mean         sd     lower     upper
-#> 1 0.4383048 0.02515639 0.3921018 0.4920014
+#> 1 0.4379131 0.02448106 0.3934104 0.4886814
 ```
 
 Estimate the probability of success of a binomnial distribution with a beta prior:
@@ -141,7 +149,7 @@ posterior2 <- binom_test_data %>%
   diagnose() %>% 
   clean(burnin = 1000, subsample = 30) %>% 
   diagnose()
-#> Acceptance rate: 0.321533215332153
+#> Acceptance rate: 0.297872978729787
 #> Acceptance rate: 1
 ```
 
@@ -154,7 +162,7 @@ posterior2 %>%
             lower = quantile(chain, .025), 
             upper = quantile(chain, .975))
 #> # A tibble: 1 x 4
-#>        mean         sd      lower     upper
-#>       <dbl>      <dbl>      <dbl>     <dbl>
-#> 1 0.1141411 0.04352383 0.04338548 0.2074253
+#>         mean         sd      lower     upper
+#>        <dbl>      <dbl>      <dbl>     <dbl>
+#> 1 0.09266241 0.03927769 0.03034031 0.1797741
 ```

@@ -63,7 +63,13 @@ posterior <- taxis_small %>%
 # Calculate the analytical hyperparameters
 hyper1 <- 10 + sum(taxis_small$passenger_count)
 hyper2 <- 10 + length(taxis_small$passenger_count)
+
+# Analytic mean estimator
 hyper1/hyper2
+
+# Our mean estimator
+posterior %>% 
+  summarize(mean = mean(chain))
 
 # Plot the simulated density against the analytical density
 ggplot(posterior, aes(chain)) + 
