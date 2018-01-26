@@ -29,10 +29,10 @@ diagnose <- function(x) {
   dens_plot <- ggplot(with_diagnostics, aes(x = chain)) +
     geom_density()
 
-  acf_df <- acf(with_diagnostics$chain, plot = FALSE)$acf %>%
+  acf_df <- stats::acf(with_diagnostics$chain, plot = FALSE)$acf %>%
     data.frame(correlation = .) %>%
     dplyr::mutate(lag = 0:(nrow(.) - 1))
-  conf_int_upper <- qnorm((1 + .95)/2) / sqrt(nrow(with_diagnostics))
+  conf_int_upper <- stats::qnorm((1 + .95)/2) / sqrt(nrow(with_diagnostics))
   conf_int_lower <- - conf_int_upper
 
   acf_plot <- ggplot(acf_df, aes(x = lag, y = correlation)) +
