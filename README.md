@@ -1,7 +1,7 @@
 binfer
 ================
 
-[![Travis-CI Build Status](https://travis-ci.org/nicksolomon/binfer.svg?branch=master)](https://travis-ci.org/nicksolomon/binfer)
+[![Travis-CI Build Status](https://travis-ci.org/nicksolomon/binfer.svg?branch=master)](https://travis-ci.org/nicksolomon/binfer) [![codecov](https://codecov.io/gh/nicksolomon/binfer/branch/master/graph/badge.svg)](https://codecov.io/gh/nicksolomon/binfer)
 
 This package aims to make doing Bayesian things a little easier by giving a clear set of steps that you can easily use to simulate draws from a posterior distribution defined by a specific likelihood and prior.
 
@@ -55,6 +55,8 @@ library(tidyverse)
 #> filter(): dplyr, stats
 #> lag():    dplyr, stats
 
+set.seed(20180127)
+
 # Load taxis dataset
 data("taxis")
 
@@ -74,8 +76,8 @@ posterior <- taxis_small %>%
   diagnose() %>% 
   clean(burnin = 1000, subsample = 15) %>% 
   diagnose()
-#> Acceptance rate: 0.277752777527775
-#> Acceptance rate: 0.988786179724201
+#> Acceptance rate: 0.277132771327713
+#> Acceptance rate: 0.991210789513563
 ```
 
 ![](man/figures/README-unnamed-chunk-1-1.png)![](man/figures/README-unnamed-chunk-1-2.png)
@@ -88,13 +90,13 @@ hyper2 <- 10 + length(taxis_small$passenger_count)
 
 # Analytic mean estimator
 hyper1/hyper2
-#> [1] 1.755501
+#> [1] 1.765281
 
 # Our mean estimator
 posterior %>% 
   summarize(mean = mean(chain))
 #>       mean
-#> 1 1.755459
+#> 1 1.764866
 
 # Plot the simulated density against the analytical density
 ggplot(posterior, aes(chain)) + 
@@ -119,7 +121,7 @@ posterior <- define(iris, Sepal.Width ~ my_lik) %>%
   diagnose() %>% 
   clean(burnin = 0, subsample = 20) %>% 
   diagnose()
-#> Acceptance rate: 0.503965039650397
+#> Acceptance rate: 0.498814988149882
 #> Acceptance rate: 1
 ```
 
@@ -132,7 +134,7 @@ posterior %>% summarise(mean = mean(chain),
                         lower = quantile(chain, .025),
                         upper = quantile(chain, .975))
 #>        mean         sd     lower    upper
-#> 1 0.4382991 0.02566922 0.3917181 0.491101
+#> 1 0.4384707 0.02516674 0.3919626 0.490722
 ```
 
 Estimate the probability of success of a binomnial distribution with a beta prior:
@@ -151,8 +153,8 @@ posterior2 <- binom_test_data %>%
   diagnose() %>% 
   clean(burnin = 1000, subsample = 30) %>% 
   diagnose()
-#> Acceptance rate: 0.296622966229662
-#> Acceptance rate: 1
+#> Acceptance rate: 0.225462254622546
+#> Acceptance rate: 0.998787511367081
 ```
 
 ![](man/figures/README-example2-1.png)![](man/figures/README-example2-2.png)
@@ -164,7 +166,7 @@ posterior2 %>%
             lower = quantile(chain, .025), 
             upper = quantile(chain, .975))
 #> # A tibble: 1 x 4
-#>         mean         sd      lower     upper
-#>        <dbl>      <dbl>      <dbl>     <dbl>
-#> 1 0.09346563 0.04000011 0.02954909 0.1847008
+#>         mean         sd      lower   upper
+#>        <dbl>      <dbl>      <dbl>   <dbl>
+#> 1 0.05748167 0.03138953 0.01249695 0.13095
 ```

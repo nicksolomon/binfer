@@ -12,6 +12,7 @@ knitr::opts_chunk$set(
 ```
 
 [![Travis-CI Build Status](https://travis-ci.org/nicksolomon/binfer.svg?branch=master)](https://travis-ci.org/nicksolomon/binfer)
+[![codecov](https://codecov.io/gh/nicksolomon/binfer/branch/master/graph/badge.svg)](https://codecov.io/gh/nicksolomon/binfer)
 
 This package aims to make doing Bayesian things a little easier by giving a clear set of steps that you can easily use to simulate draws from a posterior distribution defined by a specific likelihood and prior.
 
@@ -41,6 +42,8 @@ Let's check our simulations by comparing the results to an analytically tractabl
 ```{r}
 library(binfer)
 library(tidyverse)
+
+set.seed(20180127)
 
 # Load taxis dataset
 data("taxis")
