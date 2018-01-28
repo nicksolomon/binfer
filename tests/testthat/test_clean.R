@@ -15,16 +15,11 @@ to_simulate <- define(taxis_small, passenger_count ~ my_lik) %>%
 set.seed(20180128)
 posterior <- simulate_posterior(to_simulate, initial = 1, nbatch = 100, scale = .1)
 
-context("Testing `diagnose()`")
+clean_df <- posterior %>%
+  clean(burn = 10, subsample = 10)
 
-test_that("Posterior is unchanged", {
-  expect_equal(diagnose(posterior), posterior)
-})
+context("Testing clean()")
 
-test_that("Acceptance rate is output", {
-  expect_message(diagnose(posterior), regexp = "Acceptance rate: 0\\.686868686868687")
-})
-
-test_that("Diagnostic plots are correct", {
-  vdiffr::expect_doppelganger("Diagnostic plots", ggplot2::last_plot())
+test_that("Cleaned dataframe has the expected number of rows", {
+  expect_equal(nrow(clean_df), 9)
 })
