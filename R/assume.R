@@ -17,6 +17,14 @@ assume <- function(x, prior) {
   if (! "likelihood" %in% names(attributes(x))){
     stop("The input doesn't have a likelihood. Is it the output of `define()`?")
   }
+
+  tryCatch(
+    match.fun(attr(x, "prior")),
+    error = function(e){
+      e$message <- paste0("Couldn't find function ", attr(x, "prior"), ".")
+      stop(e)
+    }
+  )
   class(x) <- c("binfer", class(x))
   return(x)
 }
