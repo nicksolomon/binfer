@@ -17,4 +17,6 @@ Imports:
     magrittr
 Remotes: thomasp85/patchwork
 RoxygenNote: 6.0.1
-Suggests: testthat
+Suggests: 
+  testthat,
+  vdiffr
