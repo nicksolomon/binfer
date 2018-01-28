@@ -15,5 +15,6 @@ Imports:
     ggplot2,
     patchwork,
     magrittr
+Remotes: thomasp85/patchwork
 RoxygenNote: 6.0.1
 Suggests: testthat
