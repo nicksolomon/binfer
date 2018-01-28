@@ -1,6 +1,8 @@
 binfer
 ================
 
+[![Travis-CI Build Status](https://travis-ci.org/nicksolomon/binfer.svg?branch=master)](https://travis-ci.org/nicksolomon/binfer)
+
 This package aims to make doing Bayesian things a little easier by giving a clear set of steps that you can easily use to simulate draws from a posterior distribution defined by a specific likelihood and prior.
 
 The steps
@@ -72,8 +74,8 @@ posterior <- taxis_small %>%
   diagnose() %>% 
   clean(burnin = 1000, subsample = 15) %>% 
   diagnose()
-#> Acceptance rate: 0.276782767827678
-#> Acceptance rate: 0.989089255947871
+#> Acceptance rate: 0.277752777527775
+#> Acceptance rate: 0.988786179724201
 ```
 
 ![](man/figures/README-unnamed-chunk-1-1.png)![](man/figures/README-unnamed-chunk-1-2.png)
@@ -86,13 +88,13 @@ hyper2 <- 10 + length(taxis_small$passenger_count)
 
 # Analytic mean estimator
 hyper1/hyper2
-#> [1] 1.749389
+#> [1] 1.755501
 
 # Our mean estimator
 posterior %>% 
   summarize(mean = mean(chain))
 #>       mean
-#> 1 1.749365
+#> 1 1.755459
 
 # Plot the simulated density against the analytical density
 ggplot(posterior, aes(chain)) + 
@@ -117,7 +119,7 @@ posterior <- define(iris, Sepal.Width ~ my_lik) %>%
   diagnose() %>% 
   clean(burnin = 0, subsample = 20) %>% 
   diagnose()
-#> Acceptance rate: 0.497744977449774
+#> Acceptance rate: 0.503965039650397
 #> Acceptance rate: 1
 ```
 
@@ -129,8 +131,8 @@ posterior %>% summarise(mean = mean(chain),
                         sd = sd(chain),
                         lower = quantile(chain, .025),
                         upper = quantile(chain, .975))
-#>        mean         sd     lower     upper
-#> 1 0.4379131 0.02448106 0.3934104 0.4886814
+#>        mean         sd     lower    upper
+#> 1 0.4382991 0.02566922 0.3917181 0.491101
 ```
 
 Estimate the probability of success of a binomnial distribution with a beta prior:
@@ -149,7 +151,7 @@ posterior2 <- binom_test_data %>%
   diagnose() %>% 
   clean(burnin = 1000, subsample = 30) %>% 
   diagnose()
-#> Acceptance rate: 0.297872978729787
+#> Acceptance rate: 0.296622966229662
 #> Acceptance rate: 1
 ```
 
@@ -164,5 +166,5 @@ posterior2 %>%
 #> # A tibble: 1 x 4
 #>         mean         sd      lower     upper
 #>        <dbl>      <dbl>      <dbl>     <dbl>
-#> 1 0.09266241 0.03927769 0.03034031 0.1797741
+#> 1 0.09346563 0.04000011 0.02954909 0.1847008
 ```
