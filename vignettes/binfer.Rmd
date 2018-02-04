@@ -165,7 +165,7 @@ posterior %>%
 
 ## Comparison with the analytic solution
 
-Analytically, we can derive the fact the posterior distribution is a gamma distribution with shape parameter \(\alpha^{\ast} = \alpha + \sum x_i\) and rate parameter \(\beta^{\ast} = \beta + n\). This gives us \(\alpha^{\ast} = `r 10 + sum(taxis$passenger_count`\) and \(\beta(^{\ast} = `r 10 + length(taxis$passenger_count`\).  This lets us compute the mean \(\alpha^{\ast} / \beta^{\ast} = `r (10 + sum(taxis$passenger_count)) / (10 + length(taxis$passenger_count))`\). This is extremely close to what the simulation method revealed.
+Analytically, we can derive the fact the posterior distribution is a gamma distribution with shape parameter \(\alpha^{\ast} = \alpha + \sum x_i\) and rate parameter \(\beta^{\ast} = \beta + n\). This gives us \(\alpha^{\ast} = `r 10 + sum(taxis$passenger_count)`\) and \(\beta^{\ast} = `r 10 + length(taxis$passenger_count)`\).  This lets us compute the mean \(\alpha^{\ast} / \beta^{\ast} = `r (10 + sum(taxis$passenger_count)) / (10 + length(taxis$passenger_count))`\). This is extremely close to what the simulation method revealed.
 
 We can also compare the densities and they seem to tell the same story as the mean.
 
