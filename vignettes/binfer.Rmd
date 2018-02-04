@@ -13,7 +13,8 @@ The goal of a `binfer` pipeline is to output a data frame that contains draws fr
 
 ```{r setup, results = "hide"}
 library(binfer)
-library(tidyverse)
+library(dplyr)
+library(ggplot2)
 
 data("taxis")
 
