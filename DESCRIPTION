@@ -17,6 +17,9 @@ Imports:
     magrittr
 Remotes: thomasp85/patchwork
 RoxygenNote: 6.0.1
-Suggests: 
+Suggests:
   testthat,
-  vdiffr
+  vdiffr,
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
