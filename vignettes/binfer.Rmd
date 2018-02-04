@@ -11,7 +11,7 @@ vignette: >
 
 The goal of a `binfer` pipeline is to output a data frame that contains draws from the posterior distribution of the parameter of interest. To demonstrate, we'll use the `taxis` dataset included in the package. In the interest of run times, we'll subsample the data to only 10% of the rows.
 
-```{r setup}
+```{r setup, results = "hide"}
 library(binfer)
 library(tidyverse)
 
