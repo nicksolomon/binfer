@@ -24,7 +24,7 @@ Define a likelihood
 
   posterior <- define(iris, Sepal.Width ~ my_lik) \%>\%
     assume(prior = ~ my_prior) \%>\%
-    simulate_posterior(initial = .43, nbatch = 1e5, blen = 1, scale = .01) \%>\%
+    draw(initial = .43, nbatch = 1e5, blen = 1, scale = .01) \%>\%
     diagnose() \%>\%
     clean(burnin = 0, subsample = 40) \%>\%
     diagnose()

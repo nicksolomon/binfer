@@ -7,7 +7,7 @@
 clean(x, burnin = 0, subsample = 1)
 }
 \arguments{
-\item{x}{The output of \code{simulate_posterior()}}
+\item{x}{The output of \code{draw()}}
 
 \item{burnin}{The number of observations to disgard at the beginning of the
 chain.}

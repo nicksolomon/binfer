@@ -15,7 +15,7 @@
 diagnose <- function(x) {
 
   if (! "binfer.posterior" %in% class(x)){
-    stop("The input is not a `binfer` posterior. Have you called `simulate_posterior()`?")
+    stop("The input is not a `binfer` posterior. Have you called `draw()`?")
   }
 
   with_diagnostics <- x %>%

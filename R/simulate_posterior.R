@@ -9,7 +9,7 @@
 #' @export
 #'
 
-simulate_posterior <- function(x, ...) {
+draw <- function(x, ...) {
 
   attr_names <- names(attributes(x))
 

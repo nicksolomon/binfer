@@ -11,9 +11,10 @@ vignette: >
 
 The goal of a `binfer` pipeline is to output a data frame that contains draws from the posterior distribution of the parameter of interest. To demonstrate, we'll use the `taxis` dataset included in the package. In the interest of run times, we'll subsample the data to only 10% of the rows.
 
-```{r setup}
+```{r setup, results = "hide"}
 library(binfer)
-library(tidyverse)
+library(dplyr)
+library(ggplot2)
 
 data("taxis")
 
@@ -27,5 +28,155 @@ This dataset consist of information about yellow cab rides in New York City over
 glimpse(taxis)
 ```
 
+The column `passenger_count` contains the number of passengers in each ride. We'll assume that this data follows a Poisson distribution and that the parameter, \(\lambda\) follows a gamma distribution.
 
+As the gamma distribution is the conjugate prior of the Poisson distribution, this problem is analytically tractable, so we could solve it using theory as opposed to simulation. By following both approaches, we'll be able to perform a sanity check on the outcomes of our simulations so that we can trust them.
+
+## Simulation of the posterior with `binfer`
+
+We'll start with the simulation based approach. This begins with three "ingredients". The first is, of course, the data itself. But we'll also have to write R functions that represent the likelihood of a single data point and the prior distribution of our parameter. These are the three things that come together to define the posterior distribution of the parameter, given the data.
+
+One the three ingredients are in place, we can simulate draws from the posterior using a `binfer` pipeline. The minimal `binfer` pipeline has three steps:
+1. `define()` a likelihood.
+2. `assume()` a prior.
+3. `draw()` from the posterior distribution.
+
+Now, we'll define the likelihood and prior for our data. For the likelihood, we will use the `dpois()` function to define our own function that takes the data and the parameter, `theta`:
+```{r likelihood}
+lik <- function(data, theta) {dpois(data, theta)}
+```
+
+This may seem trivial, but in more complicated cases it's necessary to wrap the density of your likelihood like this.
+
+Next, we'll similarly define a gamma prior using the `dgamma()` function. In this case our prior will have only one argument, `theta`. We'll supply a shape parameter of \(\alpha = 10\), for a relatively symmetric distribution, and a rate parameter of \(\beta = 10\) for a mean of 1. This is because I believe the average number of riders in a taxi is near one.
+
+```{r}
+prior <- function(theta) {dgamma(theta, 10, 10)}
+```
+
+Now that we have the three ingredients in place, we can put together the pipe. But first, There are several arguments `draw()` that we haven't discussed yet:
+1. `initial`: This is the first value of the simulated posterior. This should be a number that causes both the overall likelihood and the prior to be nonzero. The overall likelihood is the expression `taxis$passenger_count %>% lik(theta = initial) %>% prod()`.
+2. `nbatch`: This is the number of simulations. Start small so that things run quickly when you're iterating at the early stages of your analysis.
+3. `scale`: This controls the scale parameter of the proposal distribution for the Metropolis algorithm that underlies the `draw()` function. We will discuss this parameter in further detail once we introduce the diagnose function.
+
+It is also important to set a seed as we're generating random draws from a distribution.
+
+```{r}
+set.seed(2017020)
+posterior <- taxis %>% 
+  define(likelihood = passenger_count ~ lik) %>% 
+  assume(prior = ~ prior) %>% 
+  draw(initial = 1, nbatch = 100, scale = .5)
+```
+
+Let's look at the output!
+
+```{r}
+head(posterior)
+```
+
+The output of `draw()` is a data frame with a single column, `chain`. This column contains samples
+drawn from the posterior distribution. We can plot a histogram of these:
+
+```{r}
+ggplot(posterior, aes(chain)) +
+  geom_histogram()
+```
+
+This looks pretty bad, but that's just a function of our small `nbatch` argument.
+
+### Diagnosing and cleaning Markov chains
+
+A full treatment of this topic is well beyond the scope of this vignette, but we will try to provide some practical advice for working with the Markov chain output of `draw()`. The first step is calling the function `diagnose()`. This function leaves the posterior data unchanged and is only called for its side effects. These are outputting diagnostic plots and metrics.
+
+```{r}
+posterior <- diagnose(posterior)
+```
+
+The plots include a density plot, and ACF plot, and a trace plot. Of these, the trace plot is perhaps the most useful. This tells you what your chain is doing. This one looks pretty dismal, but that's okay because our chain is short and we haven't tuned our `scale` argument yet. Also output by `diagnose` is the acceptance rate. This is a measure of how well the Markov chain is mixing. Conventional wisdom says good values are around .2.
+
+Our chain has an acceptance rate of .11, To raise this we have to *decrease* the scale parameter.
+Let's try running our chain again with a smaller scale parameter:
+
+```{r}
+posterior <- posterior <- taxis %>% 
+  define(likelihood = passenger_count ~ lik) %>% 
+  assume(prior = ~ prior) %>% 
+  draw(initial = 1, nbatch = 100, scale = .15) %>% 
+  diagnose()
+```
+
+That's much better. Now we can try running our chain for longer:
+
+```{r}
+posterior <- posterior <- taxis %>% 
+  define(likelihood = passenger_count ~ lik) %>% 
+  assume(prior = ~ prior) %>% 
+  draw(initial = 1, nbatch = 10000, scale = .15) %>% 
+  diagnose()
+```
+
+There are still two problems with our chain. First, our initial value seems to be very far out of the higher density zones of the posterior distribution. Secondly, there is significant serial autocorrelation between draws of the chain. These are both common problems that can be addressed with the `clean()` function.
+
+The first role of `clean()` is to perform *burn in*. This consists of removing some of the first draws from the chain so that it's not an issue if the initial value is very unlikely to actually be drawn front the posterior distribution.
+
+The second action is to *subsample* the chain by extracting every \(n\)th entry and saving those. This removes the issue of serial correlation and makes for independent draws from the posterior distribution.
+
+Both of these are done at once by calling `clean()` with the arguments `burnin` and `subsample`:
+
+```{r}
+posterior <- posterior <- taxis %>% 
+  define(likelihood = passenger_count ~ lik) %>% 
+  assume(prior = ~ prior) %>% 
+  draw(initial = 1, nbatch = 10000, scale = .15) %>% 
+  diagnose() %>% 
+  clean(burnin = 100, subsample = 20) %>% 
+  diagnose()
+```
+
+This leaves us with `r nrow(posterior)` draws from the posterior distribution. That's a little paltry, so we'll do one final very long run to get a good sample.
+
+```{r}
+posterior <- posterior <- taxis %>% 
+  define(likelihood = passenger_count ~ lik) %>% 
+  assume(prior = ~ prior) %>% 
+  draw(initial = 1, nbatch = 1e5, scale = .15) %>% 
+  clean(burnin = 1000, subsample = 20) %>% 
+  diagnose()
+```
+
+
+## Using the posterior
+
+Now that we have samples from the posterior distribution, we can calculate, for example, the mean and standard deviation:
+
+```{r}
+posterior %>% 
+  summarize(mean = mean(chain), sd = sd(chain))
+```
+
+
+We can also construct a confidence interval:
+
+```{r}
+posterior %>% 
+  summarize(lower = quantile(chain, .025),
+            upper = quantile(chain, .975))
+```
+
+## Comparison with the analytic solution
+
+Analytically, we can derive the fact the posterior distribution is a gamma distribution with shape parameter \(\alpha^{\ast} = \alpha + \sum x_i\) and rate parameter \(\beta^{\ast} = \beta + n\). This gives us \(\alpha^{\ast} = `r 10 + sum(taxis$passenger_count)`\) and \(\beta^{\ast} = `r 10 + length(taxis$passenger_count)`\).  This lets us compute the mean \(\alpha^{\ast} / \beta^{\ast} = `r (10 + sum(taxis$passenger_count)) / (10 + length(taxis$passenger_count))`\). This is extremely close to what the simulation method revealed.
+
+We can also compare the densities and they seem to tell the same story as the mean.
+
+```{r}
+alpha_star <- 10 + sum(taxis$passenger_count)
+beta_star <- 10 + length(taxis$passenger_count)
+
+ggplot(posterior, aes(chain)) + 
+  geom_density() +
+  stat_function(fun = dgamma, args = list(alpha_star, beta_star), color = "red")
+
+```
 

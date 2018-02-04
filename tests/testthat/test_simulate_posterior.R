@@ -13,9 +13,9 @@ to_simulate <- define(taxis_small, passenger_count ~ my_lik) %>%
   assume(~ my_prior)
 
 set.seed(20180128)
-posterior <- simulate_posterior(to_simulate, initial = 1, nbatch = 100, scale = .1)
+posterior <- draw(to_simulate, initial = 1, nbatch = 100, scale = .1)
 
-context("Testing `simulate_posterior()`")
+context("Testing `draw()`")
 
 test_that("Posterior mean is correct",{
   expect_equal(mean(posterior$chain), 1.748938037, 1e-7)
