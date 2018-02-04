@@ -18,7 +18,7 @@ The steps
 -   Input: A data frame and a function of a single variable
 -   Ouput: A data frame with the name of the function added as an attribute
 
-1.  `simulate` the posterior distribution
+1.  `draw` from the posterior distribution
 
 -   Input: A data frame, a control parameter
 -   Output: A data frame of draws from the posterior distribution
@@ -51,6 +51,7 @@ library(tidyverse)
 #> Loading tidyverse: readr
 #> Loading tidyverse: purrr
 #> Loading tidyverse: dplyr
+#> Warning: package 'tibble' was built under R version 3.4.3
 #> Conflicts with tidy packages ----------------------------------------------
 #> filter(): dplyr, stats
 #> lag():    dplyr, stats
@@ -72,7 +73,7 @@ taxis_small <- taxis %>%
 posterior <- taxis_small %>% 
   define(passenger_count ~ my_lik) %>% 
   assume(~ my_prior) %>% 
-  simulate_posterior(initial = mean(taxis$passenger_count), nbatch = 1e5, blen = 1, scale = .1) %>% 
+  draw(initial = mean(taxis$passenger_count), nbatch = 1e5, blen = 1, scale = .1) %>% 
   diagnose() %>% 
   clean(burnin = 1000, subsample = 15) %>% 
   diagnose()
@@ -117,7 +118,7 @@ my_prior <- function(theta) {dgamma(theta, shape = 10, rate = 20)}
 
 posterior <- define(iris, Sepal.Width ~ my_lik) %>% 
   assume(prior = ~ my_prior) %>% 
-  simulate_posterior(initial = .43, nbatch = 1e5, blen = 1, scale = .05) %>% 
+  draw(initial = .43, nbatch = 1e5, blen = 1, scale = .05) %>% 
   diagnose() %>% 
   clean(burnin = 0, subsample = 20) %>% 
   diagnose()
@@ -149,7 +150,7 @@ beta_prior <- function(theta) {dbeta(theta, 1, 2)}
 posterior2 <- binom_test_data %>% 
   define(response ~ binom_lik) %>% 
   assume(~ beta_prior) %>% 
-  simulate_posterior(initial = .5, nbatch = 1e5, blen = 1, scale = .15) %>% 
+  draw(initial = .5, nbatch = 1e5, blen = 1, scale = .15) %>% 
   diagnose() %>% 
   clean(burnin = 1000, subsample = 30) %>% 
   diagnose()
@@ -166,7 +167,7 @@ posterior2 %>%
             lower = quantile(chain, .025), 
             upper = quantile(chain, .975))
 #> # A tibble: 1 x 4
-#>         mean         sd      lower   upper
-#>        <dbl>      <dbl>      <dbl>   <dbl>
-#> 1 0.05748167 0.03138953 0.01249695 0.13095
+#>     mean     sd  lower upper
+#>    <dbl>  <dbl>  <dbl> <dbl>
+#> 1 0.0575 0.0314 0.0125 0.131
 ```

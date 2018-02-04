@@ -24,7 +24,7 @@ This package aims to make doing Bayesian things a little easier by giving a clea
 2. `assume` a prior distribution
   - Input: A data frame and a function of a single variable
   - Ouput: A data frame with the name of the function added as an attribute
-3. `simulate` the posterior distribution
+3. `draw` from the posterior distribution
   - Input: A data frame, a control parameter
   - Output: A data frame of draws from the posterior distribution
 4. `diagnose` the chain:
