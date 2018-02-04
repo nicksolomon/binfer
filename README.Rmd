@@ -38,51 +38,6 @@ This package aims to make doing Bayesian things a little easier by giving a clea
   
 ## Examples
 
-Let's check our simulations by comparing the results to an analytically tractable problem. We'll use count data that we assume follows a poisson distribution. The prior we choose is the conjugate prior, a gamma distribution. The posterior should be a gamma distribution as well. Let's see if that's what we get!
-```{r}
-library(binfer)
-library(tidyverse)
-
-set.seed(20180127)
-
-# Load taxis dataset
-data("taxis")
-
-# Define the prior and the likelihood
-my_lik <- function(data, theta) {if (theta > 0) dpois(data, lambda = theta) else 0}
-my_prior <- function(theta) {dgamma(theta, rate = 10, shape = 10)} 
-
-# Sample the data to reduce runtimes
-taxis_small <- taxis %>%
-  sample_frac(.1)
-
-# Do the binfer steps
-posterior <- taxis_small %>% 
-  define(passenger_count ~ my_lik) %>% 
-  assume(~ my_prior) %>% 
-  draw(initial = mean(taxis$passenger_count), nbatch = 1e5, blen = 1, scale = .1) %>% 
-  diagnose() %>% 
-  clean(burnin = 1000, subsample = 15) %>% 
-  diagnose()
-
-# Calculate the analytical hyperparameters
-hyper1 <- 10 + sum(taxis_small$passenger_count)
-hyper2 <- 10 + length(taxis_small$passenger_count)
-
-# Analytic mean estimator
-hyper1/hyper2
-
-# Our mean estimator
-posterior %>% 
-  summarize(mean = mean(chain))
-
-# Plot the simulated density against the analytical density
-ggplot(posterior, aes(chain)) + 
-  geom_density() +
-  stat_function(fun = dgamma, args = list(hyper1, hyper2), color = "red")
-```
-
-
 Estimate the standard deviation of a normal distribution with a gamma prior:
 ```{r example1}
 library(binfer)
