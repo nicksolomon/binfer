@@ -65,7 +65,7 @@ posterior <- define(iris, Sepal.Width ~ my_lik) %>%
   diagnose() %>% 
   clean(burnin = 0, subsample = 20) %>% 
   diagnose()
-#> Acceptance rate: 0.498924989249892
+#> Acceptance rate: 0.497534975349753
 #> Acceptance rate: 1
 ```
 
@@ -77,11 +77,11 @@ posterior %>% summarise(mean = mean(chain),
                         sd = sd(chain),
                         lower = quantile(chain, .025),
                         upper = quantile(chain, .975))
-#>        mean         sd     lower     upper
-#> 1 0.4381878 0.02528599 0.3914552 0.4913176
+#>        mean         sd     lower    upper
+#> 1 0.4382871 0.02558842 0.3925185 0.493049
 ```
 
-Estimate the probability of success of a binomnial distribution with a beta prior:
+Estimate the probability of success of a binomnial distribution with a beta prior and compare the analytical solution to the approximate one:
 
 ``` r
 binom_test_data <- rbinom(50, prob = .1, size = 1) %>% 
@@ -97,8 +97,8 @@ posterior2 <- binom_test_data %>%
   diagnose() %>% 
   clean(burnin = 1000, subsample = 30) %>% 
   diagnose()
-#> Acceptance rate: 0.177111771117711
-#> Acceptance rate: 0.991815701727796
+#> Acceptance rate: 0.376063760637606
+#> Acceptance rate: 1
 ```
 
 ![](man/figures/README-example2-1.png)![](man/figures/README-example2-2.png)
@@ -110,7 +110,16 @@ posterior2 %>%
             lower = quantile(chain, .025), 
             upper = quantile(chain, .975))
 #> # A tibble: 1 x 4
-#>     mean     sd   lower  upper
-#>    <dbl>  <dbl>   <dbl>  <dbl>
-#> 1 0.0369 0.0256 0.00451 0.0988
+#>    mean     sd  lower upper
+#>   <dbl>  <dbl>  <dbl> <dbl>
+#> 1 0.171 0.0508 0.0853 0.282
+
+ggplot(posterior2, aes(chain)) + 
+  geom_density() +
+  stat_function(fun = dbeta, 
+                args = list(1 + sum(binom_test_data$response), 
+                            2 + nrow(binom_test_data) - sum(binom_test_data$response)),
+                color = "red")
 ```
+
+![](man/figures/README-example2-3.png)
