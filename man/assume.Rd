@@ -9,8 +9,9 @@ assume(x, prior)
 \arguments{
 \item{x}{The output of \code{\link{define}()}.}
 
-\item{prior}{A formula with the left hand side equal to the name of a
-function.}
+\item{prior}{A formula with the left hand side as a \code{purrr}-style
+anonymous function using the variable \code{.theta} that expresses the
+prior using functions from R. For example: \code{~dnorm(.theta)}.}
 }
 \value{
 The dataframe \code{x} with the prior as an attribute.

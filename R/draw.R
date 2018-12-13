@@ -7,7 +7,7 @@
 #'
 #' @return A dataframe of draws from the posterior distribution.
 #' @export
-#'
+#' @importFrom stats as.formula
 
 draw <- function(x, ...) {
 
@@ -19,11 +19,26 @@ draw <- function(x, ...) {
     stop("Missing likelihood, response, or prior. Did you follow all the steps?")
   }
 
-  single_lik <- match.fun(attr(x, "likelihood"))
-  prior <- match.fun(attr(x, "prior"))
+  single_lik_unsafe <- attr(x, "likelihood") %>%
+    sub(".data", "..1" ,. , fixed = TRUE) %>%
+    sub(".theta", "..2", ., fixed = TRUE) %>%
+    paste("~", .) %>%
+    as.formula() %>%
+    rlang::as_function()
+  single_lik <- really(single_lik_unsafe, otherwise = 0)
+
+  prior_unsafe <- attr(x, "prior") %>%
+    sub(".theta", "..1", ., fixed = TRUE) %>%
+    paste("~", .) %>%
+    as.formula() %>%
+    rlang::as_function()
+  prior <- really(prior_unsafe, otherwise = 0)
+
   response <- attr(x, "response")
 
-  log_dens <- function(theta) {sum(log(single_lik(x[[response]], theta))) + log(prior(theta))}
+  log_dens <- function(theta) {
+    sum(log(single_lik(x[[response]], theta))) + log(prior(theta))
+    }
 
   chain <- mcmc::metrop(log_dens, ...)
 

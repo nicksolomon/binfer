@@ -3,8 +3,9 @@
 #' Assume a posterior distribution.
 #'
 #' @param x The output of \code{\link{define}()}.
-#' @param prior A formula with the left hand side equal to the name of a
-#'        function.
+#' @param prior A formula with the left hand side as a \code{purrr}-style
+#'   anonymous function using the variable \code{.theta} that expresses the
+#'   prior using functions from R. For example: \code{~dnorm(.theta)}.
 #'
 #' @return The dataframe \code{x} with the prior as an attribute.
 #' @export
@@ -12,19 +13,22 @@
 
 assume <- function(x, prior) {
 
-  attr(x, "prior") <- as.character(rlang::f_rhs(prior))
+  if (length(prior) != 2) {
+    stop("The prior specification is not in the correct form.")
+  }
+  attr(x, "prior") <- as.character((prior))[2]
 
   if (! "likelihood" %in% names(attributes(x))){
     stop("The input doesn't have a likelihood. Is it the output of `define()`?")
   }
 
-  tryCatch(
-    match.fun(attr(x, "prior")),
-    error = function(e){
-      e$message <- paste0("Couldn't find function ", attr(x, "prior"), ".")
-      stop(e)
-    }
-  )
+  # tryCatch(
+  #   match.fun(attr(x, "prior")),
+  #   error = function(e){
+  #     e$message <- paste0("Couldn't find function ", attr(x, "prior"), ".")
+  #     stop(e)
+  #   }
+  # )
   class(x) <- c("binfer", class(x))
   return(x)
 }
