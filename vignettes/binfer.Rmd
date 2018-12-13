@@ -41,17 +41,21 @@ One the three ingredients are in place, we can simulate draws from the posterior
 2. `assume()` a prior.
 3. `draw()` from the posterior distribution.
 
-Now, we'll define the likelihood and prior for our data. For the likelihood, we will use the `dpois()` function to define our own function that takes the data and the parameter, `theta`:
-```{r likelihood}
-lik <- function(data, theta) {dpois(data, theta)}
+Now, we'll define the likelihood and prior for our data. For the likelihood, we will use the `dpois()` function to define our own function that takes the `.data` and the parameter, `.theta`:
+
+```{r likelihood, eval = FALSE}
+taxis %>% 
+  define(passenger_count ~ dpois(.data, .theta))
 ```
 
-This may seem trivial, but in more complicated cases it's necessary to wrap the density of your likelihood like this.
+Notice that `binfer` uses a variation on `purrr` style anonymous functions defined by formulas. The formula must contain `.data`, representing a single data point, and `.theta`, representing a single parameter. This syntax allows the user to easily create simple likelihoods and priors. In more complex cases, the user can create an R function that represents their likelihood or prior and then pass that function to the formula interface.
 
-Next, we'll similarly define a gamma prior using the `dgamma()` function. In this case our prior will have only one argument, `theta`. We'll supply a shape parameter of \(\alpha = 10\), for a relatively symmetric distribution, and a rate parameter of \(\beta = 10\) for a mean of 1. This is because I believe the average number of riders in a taxi is near one.
+Next, we'll similarly define a gamma prior using the `dgamma()` function. In this case our prior will take only one argument, `.theta`. We'll supply a shape parameter of \(\alpha = 10\), for a relatively symmetric distribution, and a rate parameter of \(\beta = 10\) for a mean of 1. This is because I believe the average number of riders in a taxi is near one.
 
-```{r}
-prior <- function(theta) {dgamma(theta, 10, 10)}
+```{r eval = FALSE}
+taxis %>% 
+  define(passenger_count ~ dpois(.data, .theta)) %>% 
+  assume(~ dgamma(.theta, 10, 10))
 ```
 
 Now that we have the three ingredients in place, we can put together the pipe. But first, There are several arguments `draw()` that we haven't discussed yet:
@@ -64,8 +68,8 @@ It is also important to set a seed as we're generating random draws from a distr
 ```{r}
 set.seed(2017020)
 posterior <- taxis %>% 
-  define(likelihood = passenger_count ~ lik) %>% 
-  assume(prior = ~ prior) %>% 
+  define(likelihood = passenger_count ~ dpois(.data, .theta)) %>% 
+  assume(prior = ~ dgamma(.theta, 10, 10)) %>% 
   draw(initial = 1, nbatch = 100, scale = .5)
 ```
 
@@ -99,9 +103,9 @@ Our chain has an acceptance rate of .11, To raise this we have to *decrease* the
 Let's try running our chain again with a smaller scale parameter:
 
 ```{r}
-posterior <- posterior <- taxis %>% 
-  define(likelihood = passenger_count ~ lik) %>% 
-  assume(prior = ~ prior) %>% 
+posterior <- taxis %>% 
+  define(likelihood = passenger_count ~ dpois(.data, .theta)) %>% 
+  assume(prior = ~ dgamma(.theta, 10, 10)) %>% 
   draw(initial = 1, nbatch = 100, scale = .15) %>% 
   diagnose()
 ```
@@ -109,9 +113,9 @@ posterior <- posterior <- taxis %>%
 That's much better. Now we can try running our chain for longer:
 
 ```{r}
-posterior <- posterior <- taxis %>% 
-  define(likelihood = passenger_count ~ lik) %>% 
-  assume(prior = ~ prior) %>% 
+posterior <- taxis %>% 
+  define(likelihood = passenger_count ~ dpois(.data, .theta)) %>% 
+  assume(prior = ~ dgamma(.theta, 10, 10)) %>% 
   draw(initial = 1, nbatch = 10000, scale = .15) %>% 
   diagnose()
 ```
@@ -125,9 +129,9 @@ The second action is to *subsample* the chain by extracting every \(n\)th entry 
 Both of these are done at once by calling `clean()` with the arguments `burnin` and `subsample`:
 
 ```{r}
-posterior <- posterior <- taxis %>% 
-  define(likelihood = passenger_count ~ lik) %>% 
-  assume(prior = ~ prior) %>% 
+posterior <- taxis %>% 
+  define(likelihood = passenger_count ~ dpois(.data, .theta)) %>% 
+  assume(prior = ~ dgamma(.theta, 10, 10)) %>% 
   draw(initial = 1, nbatch = 10000, scale = .15) %>% 
   diagnose() %>% 
   clean(burnin = 100, subsample = 20) %>% 
@@ -138,8 +142,8 @@ This leaves us with `r nrow(posterior)` draws from the posterior distribution. T
 
 ```{r}
 posterior <- posterior <- taxis %>% 
-  define(likelihood = passenger_count ~ lik) %>% 
-  assume(prior = ~ prior) %>% 
+  define(likelihood = passenger_count ~ dpois(.data, .theta)) %>% 
+  assume(prior = ~ dgamma(.theta, 10, 10)) %>% 
   draw(initial = 1, nbatch = 1e5, scale = .15) %>% 
   clean(burnin = 1000, subsample = 20) %>% 
   diagnose()
