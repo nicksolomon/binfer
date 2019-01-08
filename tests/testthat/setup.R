@@ -14,7 +14,7 @@ to_simulate <- to_assume %>%
   assume(~ dgamma(.theta, rate = 10, shape = 10))
 
 # Purposefully introduce NaNs
-to_simulate_error <- rapply(to_simulate ,function(x) ifelse(x==6, NaN, x), how = "replace")
+to_simulate_error <- rapply(to_simulate, function(x) ifelse(x==6, NaN, x), how = "replace")
 
 set.seed(20180128)
 
