@@ -10,7 +10,7 @@ test_that("Prior is added as an attribute",{
   expect_match(attr(assume(to_assume, ~ my_prior), "prior"), "my_prior")
 })
 
-# test_that("Uknown prior throws an error", {
+# test_that("Unknown prior throws an error", {
 #   expect_error(assume(to_assume, ~my_prior2))
 # })
 
