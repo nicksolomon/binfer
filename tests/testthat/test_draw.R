@@ -2,7 +2,6 @@ library(binfer)
 library(dplyr)
 
 
-
 context("Testing `draw()`")
 
 test_that("Posterior mean is correct",{
