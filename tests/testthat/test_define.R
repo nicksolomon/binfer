@@ -1,4 +1,3 @@
-
 context("Testing `define()`")
 
 test_that("Response column is selected",{
