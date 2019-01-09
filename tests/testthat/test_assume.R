@@ -1,5 +1,3 @@
-
-
 context("Testing `assume()`")
 
 test_that("Data isn't changed",{
