@@ -2,7 +2,6 @@ library(binfer)
 library(dplyr)
 
 
-
 context("Testing `draw()`")
 
 test_that("Posterior mean is correct",{
@@ -15,4 +14,8 @@ test_that("Posterior sd is correct",{
 
 test_that("Right number of simulations is output", {
   expect_equal(nrow(posterior), 100)
+})
+
+test_that("Error isn't thrown when parameter proposals are invalid", {
+  expect_error(draw(to_simulate_bad_prior, initial = 1, nbatch = 100, scale = .2), NA)
 })
