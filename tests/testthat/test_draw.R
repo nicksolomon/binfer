@@ -1,19 +1,6 @@
 library(binfer)
 library(dplyr)
 
-data("taxis")
-my_lik <- function(data, theta) {if (theta > 0) dpois(data, lambda = theta) else 0}
-my_prior <- function(theta) {dgamma(theta, rate = 10, shape = 10)}
-
-set.seed(20180127)
-
-taxis_small <- sample_frac(taxis, .01)
-
-to_simulate <- define(taxis_small, passenger_count ~ my_lik) %>%
-  assume(~ my_prior)
-
-set.seed(20180128)
-posterior <- draw(to_simulate, initial = 1, nbatch = 100, scale = .1)
 
 context("Testing `draw()`")
 
@@ -27,4 +14,8 @@ test_that("Posterior sd is correct",{
 
 test_that("Right number of simulations is output", {
   expect_equal(nrow(posterior), 100)
+})
+
+test_that("Error isn't thrown when parameter proposals are invalid", {
+  expect_error(draw(to_simulate_bad_prior, initial = 1, nbatch = 100, scale = .2), NA)
 })

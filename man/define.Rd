@@ -10,7 +10,10 @@ define(x, likelihood)
 \item{x}{A \code{data.frame}.}
 
 \item{likelihood}{A formula where the right hand side is a variable in
-\code{x} and the left hand side is a the name of a function.}
+\code{x} and the left hand side is a \code{purrr}-style anonymous function
+using the variables \code{.data} and \code{.theta} that express the
+likelihood of a single observation using functions from R. For example:
+\code{var ~ dnorm(.data, .theta)}.}
 }
 \value{
 A \code{data.frame} with the likelihood as an attribute.
@@ -19,11 +22,9 @@ A \code{data.frame} with the likelihood as an attribute.
 Define a likelihood
 }
 \examples{
-  my_lik <- function(data, theta) {dnorm(data, mean = 3.07333 , sd = theta)}
-  my_prior <- function(theta) {dgamma(theta, shape = 1)}
 
-  posterior <- define(iris, Sepal.Width ~ my_lik) \%>\%
-    assume(prior = ~ my_prior) \%>\%
+  posterior <- define(iris, Sepal.Width ~ dnorm(.data, mean = 3.07333 , sd = .theta)) \%>\%
+    assume(prior = ~ dgamma(.theta, shape = 1)) \%>\%
     draw(initial = .43, nbatch = 1e5, blen = 1, scale = .01) \%>\%
     diagnose() \%>\%
     clean(burnin = 0, subsample = 40) \%>\%

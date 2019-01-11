@@ -3,7 +3,7 @@ Type: Package
 Title: Bayesian Inference for a Single Parameter
 Version: 0.1.0
 Authors@R: person("Nick", "Solomon", email = "nicksolomon10@gmail.com", role = c("aut", "cre"))
-Description: This pacakge contains functions for doing Bayesian inference on a single parameter.
+Description: This package contains functions for doing Bayesian inference on a single parameter.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -16,7 +16,7 @@ Imports:
     patchwork,
     magrittr
 Remotes: thomasp85/patchwork
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0
 Suggests:
   testthat,
   vdiffr,
