@@ -16,6 +16,6 @@ test_that("Right number of simulations is output", {
   expect_equal(nrow(posterior), 100)
 })
 
-test_that("Error is thrown because NaN present", {
-  expect_error(draw(posterior_error))
+test_that("Error isn't thrown when parameter proposals are invalid", {
+  expect_error(draw(to_simulate_bad_prior, initial = 1, nbatch = 100, scale = .2), NA)
 })
